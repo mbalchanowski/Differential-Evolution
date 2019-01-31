@@ -16,7 +16,7 @@ namespace DifferentialEvolution.DE
         public void RunDE()
         {
             Population population = CreatePopulation();
-            DifferentialEvolution DE = new DifferentialEvolution(population, Parameters.FitnessFunction);
+            DifferentialEvolution DE = new DifferentialEvolution(population, Parameters);
 
             DE.OnGenerationComplete += DE_OnGenerationComplete;
             DE.OnRunComplete += DE_OnRunComplete;

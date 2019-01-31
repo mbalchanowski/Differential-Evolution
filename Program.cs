@@ -11,7 +11,11 @@ namespace DifferentialEvolution
             {
                 Dimensions = 2,
                 FitnessFunction = TestFunctions.RastriginFunction,
-                Domain = TestFunctions.RastriginDomain
+                Domain = TestFunctions.RastriginDomain,
+                F = 0.5,
+                CR = 0.9,
+                AgentsCount = 20,
+                Iterations = 100
             };
 
             Solver solver = new Solver(parameters);

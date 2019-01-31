@@ -8,7 +8,7 @@ namespace DifferentialEvolution.DE
     {
         #region Properties
         public Population Population { get; set; }
-        private FitnessFunction FitnessFunction { get; set; }
+        public Parameters Parameters { get; set; }
         #endregion
 
         #region Events
@@ -16,15 +16,15 @@ namespace DifferentialEvolution.DE
         public event EventHandler OnRunComplete;
         #endregion
 
-        public DifferentialEvolution(Population population, FitnessFunction fitnessFunctionDelegate)
+        public DifferentialEvolution(Population population, Parameters parameters)
         {
             Population = population;
-            FitnessFunction = fitnessFunctionDelegate;
+            Parameters = parameters;
         }
 
         public void Run(int maxEvaluations, double CR, double F)
         {
-            Population.Evaluate(FitnessFunction);
+            Population.Evaluate(Parameters.FitnessFunction);
 
             while (maxEvaluations > 0)
             {
@@ -53,7 +53,15 @@ namespace DifferentialEvolution.DE
                         {
                             // simple mutation
                             double newElement = individual1.Elements[i] + F * (individual2.Elements[i] - individual3.Elements[i]);
-                            candidate.Elements.Add(newElement);
+
+                            if (CheckIfWithinDomain(newElement, Parameters))
+                            {
+                                candidate.Elements.Add(newElement);
+                            }
+                            else
+                            {
+                                candidate.Elements.Add(orginalElement);
+                            }
                         }
                         else
                         {
@@ -63,7 +71,7 @@ namespace DifferentialEvolution.DE
                         i++;
                     }
 
-                    if (candidate.Evaluate(FitnessFunction) < orginal.Evaluate(FitnessFunction))
+                    if (candidate.Evaluate(Parameters.FitnessFunction) < orginal.Evaluate(Parameters.FitnessFunction))
                         newGeneration.Add(candidate);
                     else
                         newGeneration.Add(orginal);
@@ -77,6 +85,11 @@ namespace DifferentialEvolution.DE
             }
 
             OnRunComplete.Invoke(Population, new EventArgs());
+        }
+
+        private bool CheckIfWithinDomain(double newElement, Parameters parameters)
+        {
+            return newElement > Parameters.Domain.Item1 && newElement < Parameters.Domain.Item2;
         }
     }
 }
